@@ -39,11 +39,3 @@ export async function uploadDocument(file) {
 
   return response.json();
 }
-
-export async function downloadDocument(id) {
-  const response = await ensureSuccessfulResponse(
-    await fetch(`${API_PREFIX}/documents/${encodeURIComponent(id)}/download`)
-  );
-
-  return response.blob();
-}

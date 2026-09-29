@@ -1,38 +1,7 @@
-const crypto = require('node:crypto');
 const fs = require('node:fs');
-const path = require('node:path');
-const multer = require('multer');
-
-const storageDirectory = path.resolve(__dirname, '../../storage');
-const defaultMaxFileSizeBytes = 10 * 1024 * 1024;
-const configuredMaxFileSizeBytes = Number(
-  process.env.DMS_MAX_FILE_SIZE_BYTES || defaultMaxFileSizeBytes
-);
-
-if (!Number.isInteger(configuredMaxFileSizeBytes) || configuredMaxFileSizeBytes <= 0) {
-  throw new Error('DMS_MAX_FILE_SIZE_BYTES deve ser um inteiro positivo.');
-}
+const { resolveStoredFilePath } = require('../config/storage');
 
 const documents = new Map();
-
-const storage = multer.diskStorage({
-  destination(req, file, callback) {
-    fs.mkdir(storageDirectory, { recursive: true }, (error) => {
-      callback(error, storageDirectory);
-    });
-  },
-  filename(req, file, callback) {
-    callback(null, crypto.randomUUID());
-  },
-});
-
-const uploadMiddleware = multer({
-  storage,
-  limits: {
-    fileSize: configuredMaxFileSizeBytes,
-    files: 1,
-  },
-}).single('file');
 
 function toPublicDocument(document) {
   const { storageName, ...publicDocument } = document;
@@ -58,12 +27,12 @@ function findDocument(id) {
 
   return {
     document: toPublicDocument(document),
-    filePath: path.join(storageDirectory, document.storageName),
+    filePath: resolveStoredFilePath(document.storageName),
   };
 }
 
 async function removeStoredFile(storageName) {
-  const filePath = path.join(storageDirectory, storageName);
+  const filePath = resolveStoredFilePath(storageName);
 
   try {
     await fs.promises.unlink(filePath);
@@ -79,5 +48,4 @@ module.exports = {
   findDocument,
   listDocuments,
   removeStoredFile,
-  uploadMiddleware,
 };

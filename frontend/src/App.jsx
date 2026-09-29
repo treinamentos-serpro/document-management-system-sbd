@@ -40,11 +40,7 @@ export default function App() {
   }, [reloadKey]);
 
   async function handleUpload(file) {
-    const uploadedDocument = await uploadDocument(file);
-    setDocuments((currentDocuments) => [
-      uploadedDocument,
-      ...currentDocuments.filter((document) => document.id !== uploadedDocument.id),
-    ]);
+    await uploadDocument(file);
     setLoadError('');
     setReloadKey((currentKey) => currentKey + 1);
   }
