@@ -48,6 +48,10 @@ test('upload cria metadados e permite baixar o conteúdo', async () => {
     assert.strictEqual(Object.hasOwn(document, 'storageName'), false);
 
     try {
+      const listResponse = await fetch(`${baseUrl}/documents`);
+      assert.strictEqual(listResponse.status, 200);
+      assert.deepStrictEqual(await listResponse.json(), [document]);
+
       const downloadResponse = await fetch(`${baseUrl}/documents/${document.id}/download`);
       assert.strictEqual(downloadResponse.status, 200);
       assert.strictEqual(await downloadResponse.text(), 'conteúdo de teste');
