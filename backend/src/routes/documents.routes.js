@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const documentsController = require('../controllers/documents.controller');
-const { uploadMiddleware } = require('../repositories/documents.repository');
+const uploadMiddleware = require('../middleware/documents-upload.middleware');
 
 const router = express.Router();
 
@@ -26,7 +26,10 @@ router.use((error, req, res, next) => {
     });
   }
 
-  if (error.message.startsWith('Multipart:') || error.message === 'Unexpected end of form') {
+  const isMalformedMultipart = typeof error.message === 'string'
+    && (error.message.startsWith('Multipart:') || error.message === 'Unexpected end of form');
+
+  if (isMalformedMultipart) {
     return res.status(400).json({
       error: { code: 'FILE_REQUIRED', message: 'Envie um arquivo válido no campo "file".' },
     });

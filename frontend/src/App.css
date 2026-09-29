@@ -409,6 +409,7 @@ input:focus-visible,
   cursor: pointer;
   font-size: 10px;
   font-weight: 700;
+  text-decoration: none;
   transition: background 140ms ease, border-color 140ms ease;
 }
 

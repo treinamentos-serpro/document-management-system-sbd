@@ -113,6 +113,7 @@ Envia um arquivo e cria um registro de metadados.
 - `Content-Type: multipart/form-data`.
 - Um campo de arquivo chamado `file`.
 - Um único arquivo por requisição; campos adicionais não são usados para definir metadados.
+- Até 10 campos de texto e 12 partes multipart por requisição; exceder esses limites retorna `400 FILE_REQUIRED`.
 - Tamanho máximo padrão de 10 MiB, configurável por `DMS_MAX_FILE_SIZE_BYTES`.
 - Sem allowlist de extensão ou MIME no MVP.
 

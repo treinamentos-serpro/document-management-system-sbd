@@ -30,7 +30,13 @@ function listDocuments(req, res) {
 }
 
 function downloadDocument(req, res) {
-  const documentRecord = documentsService.findDocumentForDownload(req.params.id);
+  let documentRecord;
+
+  try {
+    documentRecord = documentsService.findDocumentForDownload(req.params.id);
+  } catch (error) {
+    return sendError(res, 500, 'FILE_READ_ERROR', 'Não foi possível ler o arquivo.');
+  }
 
   if (!documentRecord) {
     return sendError(res, 404, 'DOCUMENT_NOT_FOUND', 'Documento não encontrado.');
